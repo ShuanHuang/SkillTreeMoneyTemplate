@@ -7,17 +7,15 @@ using System.Web.Mvc;
 
 namespace MoneyTemplate.Controllers {
     public class HomeController : Controller {
+        public SkillTreeHomeworkEntities AccountBookDB = new SkillTreeHomeworkEntities();
         public ActionResult Index() {
             return View();
         }
         public ActionResult AccountDataPage() {
-            //load data
-            var RamdomSource = Enumerable.Range(1, 1000).OrderBy(x => x * new Random().Next()).ToList();
-            var returnData = new List<AccountDataViewModel>();
-            for (int i = 0; i < 100; i++) {
-                var myAccountData = new AccountDataViewModel();
-                var myRamdom = RamdomSource[i];
-                switch (myRamdom % 3) {
+            var myViewModel = new List<AccountDataViewModel>();
+            AccountBookDB.AccountBook.ToList().ForEach(w => {
+                var myAccountData = new AccountDataViewModel { DateTime = w.Dateee.ToString("yyyy-MM-dd"), Money = string.Format("${0:N0}", w.Amounttt) };
+                switch (w.Categoryyy) {
                     case 0:
                         myAccountData.AccountType = "收入";
                         break;
@@ -28,13 +26,9 @@ namespace MoneyTemplate.Controllers {
                         myAccountData.AccountType = "其他";
                         break;
                 }
-
-                myAccountData.DateTime = DateTime.Now.AddMonths(-(myRamdom % 13)).AddDays(-(myRamdom % 30)).ToString("yyyy-MM-dd");
-                var MoneyStr = string.Format("${0:N0}", myRamdom * myRamdom * 0.01);
-                myAccountData.Money = MoneyStr == "$0" ? "$150" : MoneyStr;
-                returnData.Add(myAccountData);
-            }
-            return View(returnData.OrderByDescending(w => w.DateTime).ThenBy(w => w.AccountType).ThenBy(w => w.Money).ToList());
+                myViewModel.Add(myAccountData);
+            });
+            return View(myViewModel.OrderByDescending(w => w.DateTime).ThenBy(w => w.AccountType).ThenBy(w => w.Money).ToList());
         }
 
         public ActionResult About() {
