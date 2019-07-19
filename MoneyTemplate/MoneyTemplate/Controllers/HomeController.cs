@@ -1,4 +1,5 @@
 ﻿using MoneyTemplate.Models;
+using MoneyTemplate.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,13 +8,16 @@ using System.Web.Mvc;
 
 namespace MoneyTemplate.Controllers {
     public class HomeController : Controller {
-        public SkillTreeHomeworkEntities AccountBookDB = new SkillTreeHomeworkEntities();
+        private readonly MoneyTemplateService _moneyTemplateService;
+        public HomeController() {
+            _moneyTemplateService = new MoneyTemplateService();
+        }
         public ActionResult Index() {
             return View();
         }
         public ActionResult AccountDataPage() {
             var myViewModel = new List<AccountDataViewModel>();
-            AccountBookDB.AccountBook.ToList().ForEach(w => {
+            _moneyTemplateService.AccountBookSelect().ToList().ForEach(w => {
                 var myAccountData = new AccountDataViewModel { DateTime = w.Dateee.ToString("yyyy-MM-dd"), Money = string.Format("${0:N0}", w.Amounttt) };
                 switch (w.Categoryyy) {
                     case 0:
