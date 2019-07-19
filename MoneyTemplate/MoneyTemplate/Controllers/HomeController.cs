@@ -1,4 +1,5 @@
 ﻿using MoneyTemplate.Models;
+using MoneyTemplate.Repository;
 using MoneyTemplate.Service;
 using System;
 using System.Collections.Generic;
@@ -9,8 +10,13 @@ using System.Web.Mvc;
 namespace MoneyTemplate.Controllers {
     public class HomeController : Controller {
         private readonly MoneyTemplateService _moneyTemplateService;
+        private readonly LogService _logService;
+        private readonly UnitOfWork _unitOfWork;
         public HomeController() {
-            _moneyTemplateService = new MoneyTemplateService();
+            _unitOfWork = new UnitOfWork();
+            _moneyTemplateService = new MoneyTemplateService(_unitOfWork);
+            _logService = new LogService(_unitOfWork);
+
         }
         public ActionResult Index() {
             return View();
@@ -33,6 +39,11 @@ namespace MoneyTemplate.Controllers {
                 myViewModel.Add(myAccountData);
             });
             return View(myViewModel.OrderByDescending(w => w.DateTime).ThenBy(w => w.AccountType).ThenBy(w => w.Money).ToList());
+
+            //UnitOfWork
+            _moneyTemplateService.Add(new AccountBook { Dateee = System.DateTime.Now, Categoryyy = 0, Amounttt = 200 });
+            _logService.AddLog(new AccountBook { Dateee = System.DateTime.Now, Categoryyy = 0, Amounttt = 200 });
+            _unitOfWork.Commit();
         }
 
         public ActionResult About() {
