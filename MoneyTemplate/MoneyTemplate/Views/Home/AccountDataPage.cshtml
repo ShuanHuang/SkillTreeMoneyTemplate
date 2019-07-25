@@ -1,4 +1,7 @@
 ﻿@model List<MoneyTemplate.Models.AccountDataViewModel>
+@using MoneyTemplate.Models
+@using System.Web.Mvc.Html
+@using MoneyTemplate.Helper
 @{
     Layout = null;
     var i = 0;
@@ -16,20 +19,28 @@
                 i++;
                 <tr>
                     <td>@i.ToString()</td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.AccountType)
+                    <td class="text-danger">
+                        @*@DisplayAccountTypeColor(item.AccountType)*@
+                        @Html.DisplayAccountTypeColor(item.AccountType)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.DateTime)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Money)
+
                     </td>
                 </tr>
             }
         </table>
     </div>
 </div>
-
+@helper DisplayAccountTypeColor(AccountTypeEnum AccountType) {
+    if (AccountType == AccountTypeEnum.income) {
+        <span class="text-primary">@AccountType.GetEnumDescription()</span>
+    } else if (AccountType == AccountTypeEnum.expenditure) {
+        <span class="text-danger">@AccountType.GetEnumDescription()</span>
+    }
+}
 
 
