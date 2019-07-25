@@ -6,23 +6,20 @@ using System.Web;
 using MoneyTemplate.Models;
 
 namespace MoneyTemplate.Repository {
-    public class UnitOfWork : IUnitOfWork
-    {
+    public class UnitOfWork : IUnitOfWork {
         public DbContext Context { get; set; }
 
-        public UnitOfWork()
-        {
+        public UnitOfWork() {
             Context = new SkillTreeHomeworkEntities();
         }
 
-        public void Dispose()
-        {
+        public void Dispose() {
             Context.Dispose();
         }
 
-        public void Commit()
-        {
-            Context.SaveChanges();
+        public void Commit() {
+            try { Context.SaveChanges(); } catch (Exception ex) { }
+
         }
     }
 }

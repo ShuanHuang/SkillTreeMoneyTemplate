@@ -22,19 +22,31 @@ namespace MoneyTemplate.Controllers {
         public ActionResult Index() {
             return View();
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Index(AccountDataViewModel data) {
+            if (ModelState.IsValid) {
+                //UnitOfWork
+                _moneyTemplateService.Add(new AccountBook { Id = data.Id, Dateee = data.DateTime, Categoryyy = (int)data.AccountType, Amounttt = data.Money, Remarkkk = $"{data.Remark}" });
+                //_logService.AddLog(new AccountBook { Dateee = System.DateTime.Now, Categoryyy = 0, Amounttt = 200 });
+                _unitOfWork.Commit();
+                ModelState.AddModelError("", "新增成功");
+                return View();
+            } else {
+                ModelState.AddModelError("", "新增失敗");
+                return View(data);
+            }
+        }
         public ActionResult AccountDataPage() {
             var myViewModel = new List<AccountDataViewModel>();
 
             myViewModel.AddRange(_moneyTemplateService.AccountBookSelect()
                 .Select(w =>
                 new AccountDataViewModel {
-                    DateTime = w.Dateee, Money = string.Format("${0:N0}", w.Amounttt), AccountType = (AccountTypeEnum)w.Categoryyy
+                    DateTime = w.Dateee, Money = w.Amounttt, AccountType = (AccountTypeEnum)w.Categoryyy
                 }).ToList());
             return View(myViewModel.OrderByDescending(w => w.DateTime).ThenBy(w => w.AccountType).ThenBy(w => w.Money).ToList());
-            //UnitOfWork
-            _moneyTemplateService.Add(new AccountBook { Dateee = System.DateTime.Now, Categoryyy = 0, Amounttt = 200 });
-            _logService.AddLog(new AccountBook { Dateee = System.DateTime.Now, Categoryyy = 0, Amounttt = 200 });
-            _unitOfWork.Commit();
+
         }
 
         public ActionResult About() {
@@ -48,5 +60,7 @@ namespace MoneyTemplate.Controllers {
 
             return View();
         }
+
+
     }
 }
