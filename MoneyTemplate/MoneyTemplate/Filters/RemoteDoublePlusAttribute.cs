@@ -33,6 +33,7 @@ namespace MoneyTemplate.Filters {
                     var propValue = prop.GetValue(validationContext.ObjectInstance, null);
                     propValues.Add(propValue);
                 } else {
+                    //如果傳入參數為NULL會錯誤 
                     if (AdditionalFields != "") {
                         propValues.Add(null);
                     }

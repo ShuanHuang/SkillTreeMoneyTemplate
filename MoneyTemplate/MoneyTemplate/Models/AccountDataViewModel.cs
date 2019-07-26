@@ -11,7 +11,8 @@ namespace MoneyTemplate.Models {
         public Guid Id { get; set; }
         [Required]
         public AccountTypeEnum AccountType { get; set; }
-        [RemoteDoublePlus("VerifyDate", "Verify", "", ErrorMessage = "「日期」不得大於今天")]
+        [RemoteDoublePlus("VerifyDate", "Home", "", ErrorMessage = "「日期」不得大於今天")]
+        //[Remote("VerifyDate", "Home", "", ErrorMessage = "「日期」不得大於今天")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime DateTime { get; set; }
         [Required]
